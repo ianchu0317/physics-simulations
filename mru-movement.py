@@ -8,6 +8,10 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
 
+# Text fonts settings
+pygame.font.init()
+font = pygame.font.SysFont('arial', 15)
+
 # Display settings
 WIDTH = 700
 HEIGHT = 500
@@ -48,11 +52,22 @@ class Particle:
             else:
                 self.X_POS -= self.vel
 
+    def plot(self):
+        # Render texts into surfaces
+        accel_text = font.render(f'Acceleration: {self.accel}', False, WHITE)
+        vel_text = font.render(f'Velocity: {round(self.vel, 2)}', False, WHITE)
+        x_pos_text = font.render(f'X position: {round(self.X_POS, 2)}', False, WHITE)
+
+        # Plot movement information: acceleration, velocity, x position, time
+        screen.blit(accel_text, (10, 20))
+        screen.blit(vel_text, (10, 40))
+        screen.blit(x_pos_text, (10, 60))
+
     def draw(self):
         pygame.draw.circle(screen, self.colour, (self.X_POS, Y_POS), self.radius)
 
 
-p1 = Particle(BLUE, 2, 0)
+p1 = Particle(BLUE, 2, 0.01)
 
 while run:
     clock.tick(FPS)
@@ -63,6 +78,7 @@ while run:
 
     p1.draw()
     p1.move()
+    p1.plot()
 
     for event in pygame.event.get():
         # Exit game
