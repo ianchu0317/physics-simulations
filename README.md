@@ -14,6 +14,7 @@ El programa realiza la simulación de un tiro oblicuo y confecciona 3 tablas dis
 
 Para realizar distintas simulaciones se puede modificar el código cambiando las variables iniciales del enunciado dado:
 ```py
+# Información de partícula del enunciado (UNIDADES FÍSICAS)
 vel = 20  # Velocidad inicial (m/s)
 angle = pi/6  # Ángulo de tiro (radianes)
 # Eje y
@@ -40,9 +41,9 @@ Estos dos archivos simulan un movimiento rectilíneo (1 dimensión, eje X).
 
 El programa puede ser modificado para cambiar valores de simulación:
 ```py
+# Sintaxis: Particle(color, velocidad inicial, aceleración, está moviendo)
 p1 = Particle('blue', 2, 0.01, False)
 p2 = Particle('red', 3, 0, True)
-# Sintaxis: Particle(color, velocidad inicial, aceleración, está moviendo)
 ```
 
 #### Controles
