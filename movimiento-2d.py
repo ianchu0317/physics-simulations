@@ -1,6 +1,6 @@
 """
 El presente programa simula tiro horizontal.
-Cambiando las variables iniciales se pueden
+Cambiando las variables iniciales se puede utilizar para cualquier tiro oblicuo
 """
 
 import pygame
@@ -55,12 +55,23 @@ def convert_to_meter(pixel):
     return (len_y_axis / LEN_Y_AXIS) * pixel
 
 
+# Grados a radianes
+def convert_to_radiant(degree):
+    return (pi / 180) * degree
+
+
+# Radianes a grados
+def convert_to_degree(radiant):
+    return (180 / pi) * radiant
+
+
 # Clase partícula
 class Particle:
     def __init__(self, colour):
         # Cuerpo
         self.radius = 10
         self.colour = colour
+        self.is_moving = True
         # Ecuaciones y variables iniciales
         # Eje y en píxeles
         self.accel_y = convert_to_pixel(accel_y)  # Gravedad en píxeles
@@ -85,11 +96,17 @@ class Particle:
         # eje y
         self.vel_y = self.vel0y + self.accel_y*TIME
         self.pos_y = self.pos0y - self.vel0y*TIME - (self.accel_y/2)*pow(TIME, 2)
+        # Parar movimiento si llega objeto choca contra piso
+        if (self.pos_y + 10) >= Y_MIN:
+            self.is_moving = False
         # centro partícula
         self.center = (self.pos_x, self.pos_y)
 
     # Dibujar partícula a pantalla
     def draw(self):
+        # Dibujar trayectoria en una línea
+
+        # Dibujar el cuerpo
         pygame.draw.circle(screen, self.colour, self.center, self.radius)
 
 
@@ -109,19 +126,24 @@ def plot(particle):
     :return:
     """
     text_y_pos = 20
-    text_x_pos = 620
+    text_x_pos = 590
     # Tabla de información
     datas = [['****INFORMACIÓN****', ''],
              ['Tiempo (s)', round(TIME, 2)],
              ['Distancia x (m)', round(convert_to_meter(abs(particle.pos_x - X_MIN)), 2)],
              ['Altura h (m)', round(convert_to_meter(abs(particle.pos_y - Y_MIN)), 2)],
              ['Velocidad x (m/s)', round(convert_to_meter(particle.vel_x), 2)],
-             ['Velocidad y (m/s)', round(convert_to_meter(particle.vel_y), 2)]]
+             ['Velocidad y (m/s)', round(convert_to_meter(particle.vel_y), 2)],
+             [':---------', ''],
+             ['Velocidad inicial (m/s)', vel],
+             ['Ángulo de tiro (grados)', f'{round(convert_to_degree(angle), 1)}º']]
     # Renderizar información
     for info, data in datas:
         text = font.render(f'{info}: {data}', False, 'white')
         screen.blit(text, (text_x_pos, text_y_pos))
         text_y_pos += 20
+
+    # Textos de referencia (al lado de la figura de referencia)
 
 
 p1 = Particle('red')
@@ -142,8 +164,9 @@ while run:
     # imprimir información
     plot(p1)
 
-    # Actualizar el tiempo
-    TIME += dt
+    # Actualizar el tiempo si no choca con el piso
+    if p1.is_moving:
+        TIME += dt
 
     # Debug
     # print(p1.center, p1.vel0y)
@@ -156,6 +179,8 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 reset(p1)
+            if event.key == pygame.K_SPACE:
+                p1.is_moving = not p1.is_moving
 
     pygame.display.flip()
 pygame.quit()
