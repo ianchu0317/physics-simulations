@@ -5,6 +5,8 @@ Cambiando las variables iniciales se puede utilizar para cualquier tiro oblicuo
 
 import pygame
 from math import cos, sin, pi
+import numpy
+from matplotlib import pyplot as plt
 
 # Iniciar módulos
 pygame.init()
@@ -43,6 +45,11 @@ angle = pi/6  # radianes
 accel_y = -10  # m/s2
 len_y_axis = 45  # m
 
+# Listas de posiciones y velocidades para graficar
+y_axis = []
+x_axis = []
+time_array = []
+SAVED_GRAPHS = False
 
 # Funciones de pasaje de unidades
 # Metros a pixel
@@ -87,9 +94,14 @@ class Particle:
         self.pos_x = self.pos0x
         # Centro de partícula (x, y)
         self.center = (self.pos_x, self.pos_y)
+        # Trayectoria
+        self.trajectory = []
 
     # Actualizar ecuaciones de posiciones
     def update(self):
+        global x_axis
+        global y_axis
+        global time_array
         # eje x
         self.vel_x = self.vel0x + self.accel_x*TIME
         self.pos_x = self.pos0x + self.vel_x*TIME
@@ -99,13 +111,19 @@ class Particle:
         # Parar movimiento si llega objeto choca contra piso
         if (self.pos_y + 10) >= Y_MIN:
             self.is_moving = False
-        # centro partícula
+        # Actualizar listas de posiciones, velocidades y tiempo
+        x_axis.append(round(convert_to_meter(abs(self.pos_x - X_MIN)), 2))
+        y_axis.append(round(convert_to_meter(abs(self.pos_y - Y_MIN)), 2))
+        time_array.append(TIME)
+        # Actualizar centro de partícula
         self.center = (self.pos_x, self.pos_y)
+        self.trajectory.append((int(self.pos_x), int(self.pos_y)))
 
     # Dibujar partícula a pantalla
     def draw(self):
-        # Dibujar trayectoria en una línea
-
+        # Dibujar trayectoria trayectoria
+        for dot in self.trajectory:
+            screen.set_at(dot, (255, 255, 0))
         # Dibujar el cuerpo
         pygame.draw.circle(screen, self.colour, self.center, self.radius)
 
@@ -116,6 +134,8 @@ def reset(particle):
     TIME = 0
     particle.pos_x = particle.pos0x
     particle.pos_y = particle.pos0y
+    particle.trajectory.clear()
+    p1.is_moving = True
 
 
 # Imprimir información a pantalla
@@ -135,6 +155,7 @@ def plot(particle):
              ['Velocidad x (m/s)', round(convert_to_meter(particle.vel_x), 2)],
              ['Velocidad y (m/s)', round(convert_to_meter(particle.vel_y), 2)],
              [':---------', ''],
+             ['Altura de tiro (m): ', len_y_axis],
              ['Velocidad inicial (m/s)', vel],
              ['Ángulo de tiro (grados)', f'{round(convert_to_degree(angle), 1)}º']]
     # Renderizar información
@@ -143,7 +164,14 @@ def plot(particle):
         screen.blit(text, (text_x_pos, text_y_pos))
         text_y_pos += 20
 
-    # Textos de referencia (al lado de la figura de referencia)
+
+def _plot(ax, x_data, y_data, f_name):
+    ax.plot(x_data, y_data)
+    ax.set_xlabel('Eje X', fontsize=8)
+    ax.set_ylabel('Eje Y', fontsize=8)
+    ax.set_title(f_name, fontsize=10)
+    ax.grid(visible=True, linestyle=':', linewidth=0.5)
+    return ax
 
 
 p1 = Particle('red')
@@ -157,16 +185,27 @@ while run:
     pygame.draw.line(screen, 'white', (X_MIN, Y_MAX), (X_MIN, Y_MIN))  # línea vertical
     pygame.draw.line(screen, 'white', (X_MIN, Y_MIN), (X_MAX, Y_MIN))  # línea horizontal
 
-    # Actualizar partícula
-    p1.draw()
-    p1.update()
-
     # imprimir información
     plot(p1)
 
-    # Actualizar el tiempo si no choca con el piso
+    # Actualizar el tiempo y movimiento si no choca con el piso
     if p1.is_moving:
+        p1.update()
         TIME += dt
+    else:
+        # Graficar luego de que la pelota caiga al piso
+        if not SAVED_GRAPHS:
+            fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+            _plot(ax, x_axis, y_axis, 'Y en función de X')
+            fig.savefig('./y_en_x.jpg')
+            fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+            _plot(ax, time_array, x_axis, 'X en función de tiempo')
+            fig.savefig('./x_en_t.jpg')
+            fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+            _plot(ax, time_array, y_axis, 'Y en función de tiempo')
+            fig.savefig('./y_en_t.jpg')
+            SAVED_GRAPHS = True
+    p1.draw()
 
     # Debug
     # print(p1.center, p1.vel0y)
