@@ -5,7 +5,6 @@ Cambiando las variables iniciales se puede utilizar para cualquier tiro oblicuo
 
 import pygame
 from math import cos, sin, pi
-import numpy
 from matplotlib import pyplot as plt
 
 # Iniciar módulos
@@ -50,6 +49,7 @@ y_axis = []
 x_axis = []
 time_array = []
 SAVED_GRAPHS = False
+
 
 # Funciones de pasaje de unidades
 # Metros a pixel
@@ -132,9 +132,17 @@ class Particle:
 def reset(particle):
     global TIME
     TIME = 0
+    # Reset velocity and positions
+    particle.vel0x = convert_to_pixel(cos(angle) * vel)
+    particle.vel0y = convert_to_pixel(sin(angle) * vel)
     particle.pos_x = particle.pos0x
     particle.pos_y = particle.pos0y
+    # Clear array
     particle.trajectory.clear()
+    time_array.clear()
+    x_axis.clear()
+    y_axis.clear()
+    # Reset movement
     p1.is_moving = True
 
 
@@ -148,7 +156,7 @@ def plot(particle):
     text_y_pos = 20
     text_x_pos = 590
     # Tabla de información
-    datas = [['****INFORMACIÓN****', ''],
+    datas = [[':****INFORMACIÓN****', ''],
              ['Tiempo (s)', round(TIME, 2)],
              ['Distancia x (m)', round(convert_to_meter(abs(particle.pos_x - X_MIN)), 2)],
              ['Altura h (m)', round(convert_to_meter(abs(particle.pos_y - Y_MIN)), 2)],
@@ -218,8 +226,13 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 reset(p1)
-            if event.key == pygame.K_SPACE:
-                p1.is_moving = not p1.is_moving
+            if event.key == pygame.K_UP:
+                angle = convert_to_radiant(convert_to_degree(angle) + 1)
+                reset(p1)
+            if event.key == pygame.K_DOWN:
+                angle = convert_to_radiant(convert_to_degree(angle) - 1)
+                reset(p1)
+
 
     pygame.display.flip()
 pygame.quit()
