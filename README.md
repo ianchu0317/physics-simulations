@@ -3,6 +3,8 @@ Repositorio con simulaciones de Física.
 
 --- 
 ## Movimiento 2D
+![tiro oblicuo](https://github.com/ianchu0317/physics-simulations/assets/71509578/c338e71d-ce1c-4db1-be9a-f2770cf104c0)
+
 - Archivo: [movimiento-2d.py](https://github.com/ianchu0317/physics-simulations/blob/main/movimiento-2d.py)
 
 El programa realiza la simulación de un tiro oblicuo y confecciona 3 tablas distintas luego de la simulación:
