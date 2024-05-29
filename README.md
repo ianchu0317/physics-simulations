@@ -30,7 +30,9 @@ fig.savefig('ubicación y nombre del archivo')
 #### Controles
 El botón `ESC (escape)` reinicia la simulación con datos actuales. 
 
-Los botones de `(↑) arriba` y `(↓) abajo` reinicia la simulación pero aumentando y disminuyendo respectivamente 1º (grado) el ángulo del tiro actual.
+Los botones de `(↑) arriba` y `(↓) abajo` reinicia la simulación pero aumentando o disminuyendo respectivamente 1º (grado) el ángulo del tiro actual.
+
+Los botones de `(→) derecha` e `(←) izquierda` reinicia la simulación pero aumentando o disminuyendo respectivamente 1 m/s la velocidad inicial del tiro actual. 
 
 ---
 ## Movimiento 1D
