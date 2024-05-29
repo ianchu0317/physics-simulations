@@ -224,15 +224,23 @@ while run:
             run = False
         # Resetear programa
         if event.type == pygame.KEYDOWN:
+            # Resetear programa con datos actuales
             if event.key == pygame.K_ESCAPE:
                 reset(p1)
+            # Resetear simulación cambiando datos del ángulo de tiro
             if event.key == pygame.K_UP:
                 angle = convert_to_radiant(convert_to_degree(angle) + 1)
                 reset(p1)
             if event.key == pygame.K_DOWN:
                 angle = convert_to_radiant(convert_to_degree(angle) - 1)
                 reset(p1)
-
+            # Resetear simulación cambiando datos de la velocidad
+            if event.key == pygame.K_RIGHT:
+                vel += 1  # m/s
+                reset(p1)
+            if event.key == pygame.K_LEFT:
+                vel -= 1  # m/s
+                reset(p1)
 
     pygame.display.flip()
 pygame.quit()
