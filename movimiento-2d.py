@@ -205,13 +205,13 @@ while run:
         if not SAVED_GRAPHS:
             fig, ax = plt.subplots(1, 1, figsize=(10, 5))
             _plot(ax, x_axis, y_axis, 'Y en función de X')
-            fig.savefig('./y_en_x.jpg')
+            fig.savefig('./graphs/y_en_x.jpg')
             fig, ax = plt.subplots(1, 1, figsize=(10, 5))
             _plot(ax, time_array, x_axis, 'X en función de tiempo')
-            fig.savefig('./x_en_t.jpg')
+            fig.savefig('./graphs/x_en_t.jpg')
             fig, ax = plt.subplots(1, 1, figsize=(10, 5))
             _plot(ax, time_array, y_axis, 'Y en función de tiempo')
-            fig.savefig('./y_en_t.jpg')
+            fig.savefig('./graphs/y_en_t.jpg')
             SAVED_GRAPHS = True
     p1.draw()
 
