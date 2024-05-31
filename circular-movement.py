@@ -4,7 +4,6 @@ El presente programa simula movimientos circulares.
 
 import pygame
 from math import cos, sin, pi, radians, degrees
-from matplotlib import pyplot as plt
 
 # Iniciar módulos
 pygame.init()
@@ -26,16 +25,6 @@ TIME = 0  # tiempo total de simulación
 # Configuraciones de textos
 pygame.font.init()
 font = pygame.font.SysFont('arial', 15)
-
-
-# Conversion de grados a radianes
-def convert_to_radiant(degree):
-    return (pi / 180) * degree
-
-
-# Conversión radianes a grados
-def convert_to_degree(radiant):
-    return (180 / pi) * radiant
 
 
 # Clase de la partícula
@@ -103,6 +92,7 @@ def plot(particle):
              ['Tiempo (s)', round(TIME, 2)],
              ['Posición X (px)', round(particle.pos_x, 2)],
              ['Posición Y (px)', round(particle.pos_y, 2)],
+             ['Radio del movimiento (px)', particle.RADIUS],
              [':--Información angular--', ''],
              ['Aceleración angular(rad/s2): ', particle.accel_ang],
              ['Velocidad angular (rad/s): ', round(particle.vel_ang, 2)],
@@ -117,7 +107,7 @@ def plot(particle):
         text_y_pos += 20
 
 
-p1 = Particle('red', 50, -0.01, 100)
+p1 = Particle('red', 50, -0.3, 100)
 
 # Bucle principal de simulación
 while run:
@@ -143,7 +133,14 @@ while run:
             # Resetear programa con datos actuales
             if event.key == pygame.K_ESCAPE:
                 reset(p1)
-            # Resetear simulación cambiando datos del ángulo de tiro
+            # Resetear simulación cambiando datos del movimiento circular
+            # Resetear con cambio en radio del movimiento
+            if event.key == pygame.K_RIGHT:
+                p1.RADIUS += 10
+                reset(p1)
+            if event.key == pygame.K_LEFT:
+                p1.RADIUS -= 10
+                reset(p1)
     pygame.display.flip()
 pygame.quit()
 quit()
