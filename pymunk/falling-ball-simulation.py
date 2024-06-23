@@ -17,11 +17,15 @@ clock = pygame.time.Clock()
 FPS = 60
 dt = 1/FPS
 
+# Manage all balls
+all_balls = pygame.sprite.Group()
+
 
 # Class for Ball
-class Ball:
+class Ball(pygame.sprite.Sprite):
     def __init__(self, color, position):
         # physics
+        super().__init__()
         self.mass = 500
         self.moment = 50
         self.elasticity = 1
@@ -43,9 +47,15 @@ class Ball:
 # Create borders
 def create_border(init, final):
     b = pymunk.Body(body_type=pymunk.Body.STATIC)
-    s = pymunk.Segment(b, init, final, 5)
-    s.elasticity = 0.7
+    s = pymunk.Segment(b, init, final, 10)
+    s.elasticity = 0.999999
     space.add(b, s)
+
+
+# Create ball on mouse click
+def create_ball(position):
+    ball = Ball('red', position)
+    all_balls.add(ball)
 
 
 create_border((0, 0), (0, HEIGHT))
@@ -53,9 +63,6 @@ create_border((0, HEIGHT), (WIDTH, HEIGHT))
 create_border((0, 0), (WIDTH, 0))
 create_border((WIDTH, 0), (WIDTH, HEIGHT))
 
-# Create ball
-b1 = Ball('blue', (WIDTH/2, 0))
-b2 = Ball('red', (WIDTH/3, 0))
 
 while run:
     # update time
@@ -63,12 +70,19 @@ while run:
     space.step(dt)
     screen.fill('white')
 
-    b1.update()
-    b2.update()
+    # Draw simulation borders
+    pygame.draw.rect(screen, 'grey', pygame.rect.Rect(0, HEIGHT - 10, WIDTH, 10))  # bottom
+    pygame.draw.rect(screen, 'grey', pygame.rect.Rect(0, 0, WIDTH, 10))  # top
+    pygame.draw.rect(screen, 'grey', pygame.rect.Rect(0, 0, 10, HEIGHT))  # left
+    pygame.draw.rect(screen, 'grey', pygame.rect.Rect(WIDTH - 10, 0, 10, HEIGHT))  # right
+    all_balls.update()
 
+    # Check events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            create_ball(pygame.mouse.get_pos())
 
     pygame.display.flip()
 pygame.quit()
